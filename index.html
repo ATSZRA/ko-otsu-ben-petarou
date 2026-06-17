@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&#30002;&#20057;&#24321;&#12410;&#12383;&#37070; HTML&#29256;</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      background: #f6f7f9;
+      color: #1f2933;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #d8dee8;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(31, 41, 51, 0.08);
+      padding: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .lead {
+      margin: 0 0 24px;
+      color: #52606d;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    label {
+      font-weight: 700;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      padding: 10px 12px;
+      border: 1px solid #b8c2cc;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .inline {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .inline > * {
+      flex: 1 1 120px;
+    }
+
+    .side label {
+      font-weight: 400;
+      margin-right: 18px;
+    }
+
+    .preview-text {
+      color: #e60000;
+      font-size: 24px;
+      min-height: 34px;
+    }
+
+    .file-name {
+      color: #52606d;
+      font-size: 14px;
+    }
+
+    .viewer {
+      margin-top: 26px;
+      border-top: 1px solid #e4e7eb;
+      padding-top: 22px;
+    }
+
+    .viewer-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .viewer-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .viewer-frame {
+      position: relative;
+      min-height: 360px;
+      max-height: 720px;
+      overflow: auto;
+      background: #eef2f7;
+      border: 1px solid #ccd5df;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .page-wrap {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      box-shadow: 0 8px 28px rgba(31, 41, 51, 0.18);
+      background: #fff;
+    }
+
+    #pdfCanvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #fff;
+    }
+
+    #stampOverlay {
+      position: absolute;
+      display: none;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .empty-preview {
+      padding: 140px 16px;
+      color: #697586;
+      line-height: 1.7;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 24px;
+      background: #1f6feb;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #9fb7d9;
+      cursor: wait;
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 26px;
+      border-top: 1px solid #e4e7eb;
+      padding-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    #status {
+      color: #52606d;
+    }
+
+    .folder-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+      border-top: 1px solid #e4e7eb;
+      padding-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .secondary {
+      background: #52606d;
+    }
+
+    #folderStatus {
+      color: #52606d;
+      font-size: 14px;
+    }
+
+    .note {
+      margin-top: 18px;
+      color: #52606d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>&#30002;&#20057;&#24321;&#12410;&#12383;&#37070; HTML&#29256;</h1>
+  <p class="lead">
+    PDF&#12398;1&#12506;&#12540;&#12472;&#30446;&#12384;&#12369;&#12395;&#12289;&#36879;&#36942;&#32972;&#26223;&#12398;&#36196;&#12356;&#12300;&#30002;&#31532;&#9675;&#21495;&#35388;&#12301;&#31561;&#12434;&#37325;&#12397;&#12414;&#12377;&#12290;
+    &#12501;&#12449;&#12452;&#12523;&#12399;&#12502;&#12521;&#12454;&#12470;&#20869;&#12391;&#20966;&#29702;&#12373;&#12428;&#12289;&#22806;&#37096;&#12408;&#36865;&#20449;&#12373;&#12428;&#12414;&#12379;&#12435;&#12290;
+  </p>
+
+  <div class="grid">
+    <label for="pdfFile">PDF</label>
+    <input id="pdfFile" type="file" accept="application/pdf,.pdf">
+
+    <label>&#34920;&#31034;</label>
+    <div class="inline">
+      <select id="evidenceType" aria-label="&#31278;&#21029;">
+        <option value="&#30002;">&#30002;</option>
+        <option value="&#20057;">&#20057;</option>
+        <option value="&#19993;">&#19993;</option>
+        <option value="&#24321;">&#24321;</option>
+      </select>
+      <input id="number" type="text" value="1" inputmode="numeric" aria-label="&#35388;&#25312;&#30058;&#21495;">
+    </div>
+
+    <label>&#37197;&#32622;</label>
+    <div class="side">
+      <label><input type="radio" name="side" value="right" checked> &#21491;&#19978;</label>
+      <label><input type="radio" name="side" value="left"> &#24038;&#19978;</label>
+    </div>
+
+    <label>&#12503;&#12524;&#12499;&#12517;&#12540;</label>
+    <div>
+      <div id="preview" class="preview-text">&#30002;&#31532;1&#21495;&#35388;</div>
+      <div id="fileNamePreview" class="file-name">&#29983;&#25104;&#12501;&#12449;&#12452;&#12523;&#21517;: &#30002;001.pdf</div>
+    </div>
+  </div>
+
+  <section class="viewer">
+    <div class="viewer-head">
+      <h2>PDF&#34920;&#31034;&#26528;</h2>
+      <span id="previewStatus">PDF&#12434;&#36984;&#25246;&#12377;&#12427;&#12392;1&#12506;&#12540;&#12472;&#30446;&#12434;&#12503;&#12524;&#12499;&#12517;&#12540;&#12375;&#12414;&#12377;&#12290;</span>
+    </div>
+    <div class="viewer-frame">
+      <div id="emptyPreview" class="empty-preview">PDF&#12398;1&#12506;&#12540;&#12472;&#30446;&#12364;&#12371;&#12371;&#12395;&#34920;&#31034;&#12373;&#12428;&#12414;&#12377;&#12290;</div>
+      <div id="pageWrap" class="page-wrap" hidden>
+        <canvas id="pdfCanvas"></canvas>
+        <img id="stampOverlay" alt="">
+      </div>
+    </div>
+  </section>
+
+  <div class="folder-row">
+    <button id="chooseFolder" class="secondary" type="button">&#12480;&#12454;&#12531;&#12525;&#12540;&#12489;&#12501;&#12457;&#12523;&#12480;&#12434;&#36984;&#25246;</button>
+    <span id="folderStatus">&#20445;&#23384;&#20808;: &#12502;&#12521;&#12454;&#12470;&#26082;&#23450;&#12398;&#12480;&#12454;&#12531;&#12525;&#12540;&#12489;&#12501;&#12457;&#12523;&#12480;</span>
+  </div>
+
+  <div class="actions">
+    <button id="run">PDF&#12434;&#20316;&#25104;</button>
+    <span id="status">PDF&#12434;&#36984;&#25246;&#12375;&#12390;&#12367;&#12384;&#12373;&#12356;&#12290;</span>
+  </div>
+
+  <p class="note">
+    24&#12509;&#12452;&#12531;&#12488;&#30456;&#24403;&#12398;&#36196;&#25991;&#23383;&#12434;&#36879;&#26126;PNG&#12392;&#12375;&#12390;PDF&#12398;1&#12506;&#12540;&#12472;&#30446;&#12395;&#36028;&#12426;&#20184;&#12369;&#12414;&#12377;&#12290;
+    &#29983;&#25104;&#12501;&#12449;&#12452;&#12523;&#21517;&#12399; <code>&#30002;001.pdf</code> &#12398;&#12424;&#12358;&#12395;&#12289;&#31278;&#21029;&#65291;&#21322;&#35282;3&#26689;&#12391;&#20986;&#21147;&#12375;&#12414;&#12377;&#12290;
+  </p>
+</main>
+
+<script src="./pdf.min.js"></script>
+<script src="./pdf-lib.min.js"></script>
+<script>
+  const FONT_SIZE = 24;
+  const MARGIN = 24;
+  const evidenceType = document.getElementById('evidenceType');
+  const numberInput = document.getElementById('number');
+  const preview = document.getElementById('preview');
+  const fileNamePreview = document.getElementById('fileNamePreview');
+  const status = document.getElementById('status');
+  const previewStatus = document.getElementById('previewStatus');
+  const runButton = document.getElementById('run');
+  const chooseFolderButton = document.getElementById('chooseFolder');
+  const folderStatus = document.getElementById('folderStatus');
+  const fileInput = document.getElementById('pdfFile');
+  const emptyPreview = document.getElementById('emptyPreview');
+  const pageWrap = document.getElementById('pageWrap');
+  const pdfCanvas = document.getElementById('pdfCanvas');
+  const stampOverlay = document.getElementById('stampOverlay');
+
+  let loadedBytes = null;
+  let firstPageSize = null;
+  let previewScale = 1;
+  let directoryHandle = null;
+
+  const DB_NAME = 'evidence-stamp-html';
+  const DB_STORE = 'settings';
+  const DB_KEY = 'download-directory';
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
+
+  function toHalfWidthDigits(value) {
+    return value.replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0));
+  }
+
+  function normalizedNumberText() {
+    const text = toHalfWidthDigits(numberInput.value.trim());
+    if (!/^[0-9]+$/.test(text)) {
+      throw new Error('\u8a3c\u62e0\u756a\u53f7\u306f\u6570\u5b57\u3060\u3051\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    }
+    const value = Number.parseInt(text, 10);
+    if (!Number.isInteger(value) || value < 1 || value > 999) {
+      throw new Error('\u8a3c\u62e0\u756a\u53f7\u306f1\u304b\u3089999\u306e\u7bc4\u56f2\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    }
+    return String(value);
+  }
+
+  function paddedNumber() {
+    return normalizedNumberText().padStart(3, '0');
+  }
+
+  function currentLabel() {
+    return `${evidenceType.value}\u7b2c${normalizedNumberText()}\u53f7\u8a3c`;
+  }
+
+  function currentOutputName() {
+    return `${evidenceType.value}${paddedNumber()}.pdf`;
+  }
+
+  function selectedSide() {
+    return document.querySelector('input[name="side"]:checked').value;
+  }
+
+  function updateTextPreview() {
+    try {
+      preview.textContent = currentLabel();
+      fileNamePreview.textContent = `\u751f\u6210\u30d5\u30a1\u30a4\u30eb\u540d: ${currentOutputName()}`;
+    } catch (_error) {
+      preview.textContent = `${evidenceType.value}\u7b2c\u25cb\u53f7\u8a3c`;
+      fileNamePreview.textContent = `\u751f\u6210\u30d5\u30a1\u30a4\u30eb\u540d: ${evidenceType.value}000.pdf`;
+    }
+  }
+
+  function createStamp(label) {
+    const probe = document.createElement('canvas').getContext('2d');
+    const font = `${FONT_SIZE}px "Yu Gothic", "Yu Gothic UI", Meiryo, sans-serif`;
+    probe.font = font;
+    const metrics = probe.measureText(label);
+    const width = Math.ceil(metrics.width) + 6;
+    const height = Math.ceil(FONT_SIZE * 1.4) + 6;
+    const scale = Math.max(2, Math.ceil(window.devicePixelRatio || 1));
+    const canvas = document.createElement('canvas');
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    ctx.clearRect(0, 0, width, height);
+    ctx.font = font;
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#e60000';
+    ctx.fillText(label, 3, 3);
+    return { dataUrl: canvas.toDataURL('image/png'), width, height };
+  }
+
+  function updateStampOverlay() {
+    if (!firstPageSize || pageWrap.hidden) return;
+    try {
+      const stamp = createStamp(currentLabel());
+      const left = selectedSide() === 'left'
+        ? MARGIN * previewScale
+        : (firstPageSize.width - MARGIN - stamp.width) * previewScale;
+      stampOverlay.src = stamp.dataUrl;
+      stampOverlay.style.left = `${left}px`;
+      stampOverlay.style.top = `${MARGIN * previewScale}px`;
+      stampOverlay.style.width = `${stamp.width * previewScale}px`;
+      stampOverlay.style.height = `${stamp.height * previewScale}px`;
+      stampOverlay.style.display = 'block';
+    } catch (_error) {
+      stampOverlay.style.display = 'none';
+    }
+  }
+
+  async function renderPdfPreview() {
+    if (!loadedBytes) return;
+    previewStatus.textContent = '\u30d7\u30ec\u30d3\u30e5\u30fc\u3092\u4f5c\u6210\u4e2d\u3067\u3059...';
+    const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(loadedBytes.slice(0)) });
+    const pdf = await loadingTask.promise;
+    const page = await pdf.getPage(1);
+    const baseViewport = page.getViewport({ scale: 1 });
+    const maxWidth = 820;
+    previewScale = Math.min(1.35, maxWidth / baseViewport.width);
+    const viewport = page.getViewport({ scale: previewScale });
+    const outputScale = window.devicePixelRatio || 1;
+    const context = pdfCanvas.getContext('2d');
+    pdfCanvas.width = Math.floor(viewport.width * outputScale);
+    pdfCanvas.height = Math.floor(viewport.height * outputScale);
+    pdfCanvas.style.width = `${viewport.width}px`;
+    pdfCanvas.style.height = `${viewport.height}px`;
+    pageWrap.style.width = `${viewport.width}px`;
+    pageWrap.style.height = `${viewport.height}px`;
+    await page.render({
+      canvasContext: context,
+      viewport,
+      transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null,
+    }).promise;
+    firstPageSize = { width: baseViewport.width, height: baseViewport.height };
+    emptyPreview.hidden = true;
+    pageWrap.hidden = false;
+    updateStampOverlay();
+    previewStatus.textContent = `1\u30da\u30fc\u30b8\u76ee\u3092\u8868\u793a\u4e2d\u3067\u3059\u3002\u5168${pdf.numPages}\u30da\u30fc\u30b8\u306e\u3046\u3061\u3001\u30b9\u30bf\u30f3\u30d7\u3059\u308b\u306e\u306f1\u30da\u30fc\u30b8\u76ee\u3060\u3051\u3067\u3059\u3002`;
+  }
+
+  function downloadBytes(bytes, filename) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function openSettingsDb() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore(DB_STORE);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function loadStoredDirectory() {
+    if (!('indexedDB' in window)) return null;
+    try {
+      const db = await openSettingsDb();
+      return await new Promise((resolve, reject) => {
+        const request = db.transaction(DB_STORE, 'readonly').objectStore(DB_STORE).get(DB_KEY);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+      });
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  async function storeDirectory(handle) {
+    if (!('indexedDB' in window)) return;
+    const db = await openSettingsDb();
+    await new Promise((resolve, reject) => {
+      const request = db.transaction(DB_STORE, 'readwrite').objectStore(DB_STORE).put(handle, DB_KEY);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function hasWritePermission(handle, requestIfNeeded) {
+    const options = { mode: 'readwrite' };
+    if ((await handle.queryPermission(options)) === 'granted') return true;
+    if (requestIfNeeded && (await handle.requestPermission(options)) === 'granted') return true;
+    return false;
+  }
+
+  function updateFolderStatus() {
+    if (directoryHandle) {
+      folderStatus.textContent = `\u4fdd\u5b58\u5148: ${directoryHandle.name}\uff08\u9078\u629e\u6e08\u307f\uff09`;
+    } else {
+      folderStatus.textContent = '\u4fdd\u5b58\u5148: \u30d6\u30e9\u30a6\u30b6\u65e2\u5b9a\u306e\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u30d5\u30a9\u30eb\u30c0';
+    }
+  }
+
+  async function initializeFolder() {
+    if (!('showDirectoryPicker' in window)) {
+      chooseFolderButton.disabled = true;
+      folderStatus.textContent = '\u4fdd\u5b58\u5148: \u30d6\u30e9\u30a6\u30b6\u65e2\u5b9a\u306e\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u30d5\u30a9\u30eb\u30c0\uff08\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u306f\u30d5\u30a9\u30eb\u30c0\u9078\u629e\u306b\u975e\u5bfe\u5fdc\uff09';
+      return;
+    }
+    directoryHandle = await loadStoredDirectory();
+    updateFolderStatus();
+  }
+
+  async function chooseDownloadFolder() {
+    if (!('showDirectoryPicker' in window)) {
+      throw new Error('\u3053\u306e\u30d6\u30e9\u30a6\u30b6\u3067\u306f\u4fdd\u5b58\u5148\u30d5\u30a9\u30eb\u30c0\u3092\u9078\u629e\u3067\u304d\u307e\u305b\u3093\u3002Chrome\u3084Edge\u3067\u958b\u3044\u3066\u304f\u3060\u3055\u3044\u3002');
+    }
+    const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    if (!(await hasWritePermission(handle, true))) {
+      throw new Error('\u9078\u629e\u3057\u305f\u30d5\u30a9\u30eb\u30c0\u3078\u306e\u66f8\u304d\u8fbc\u307f\u304c\u8a31\u53ef\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002');
+    }
+    directoryHandle = handle;
+    await storeDirectory(handle);
+    updateFolderStatus();
+  }
+
+  async function saveBytes(bytes, filename) {
+    if (directoryHandle) {
+      if (!(await hasWritePermission(directoryHandle, true))) {
+        directoryHandle = null;
+        updateFolderStatus();
+        throw new Error('\u4fdd\u5b58\u5148\u30d5\u30a9\u30eb\u30c0\u3078\u306e\u66f8\u304d\u8fbc\u307f\u8a31\u53ef\u304c\u5207\u308c\u3066\u3044\u307e\u3059\u3002\u3082\u3046\u4e00\u5ea6\u30d5\u30a9\u30eb\u30c0\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+      }
+      const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(new Blob([bytes], { type: 'application/pdf' }));
+      await writable.close();
+      return 'folder';
+    }
+    downloadBytes(bytes, filename);
+    return 'download';
+  }
+
+  async function stampPdf() {
+    if (!loadedBytes) throw new Error('PDF\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    const label = currentLabel();
+    const pdfDoc = await PDFLib.PDFDocument.load(loadedBytes.slice(0));
+    const pages = pdfDoc.getPages();
+    if (pages.length === 0) throw new Error('\u30da\u30fc\u30b8\u306e\u306a\u3044PDF\u306f\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3002');
+
+    const stamp = createStamp(label);
+    const stampImage = await pdfDoc.embedPng(stamp.dataUrl);
+    const page = pages[0];
+    const pageWidth = page.getWidth();
+    const pageHeight = page.getHeight();
+    const x = selectedSide() === 'left' ? MARGIN : pageWidth - MARGIN - stamp.width;
+    const y = pageHeight - MARGIN - stamp.height;
+    page.drawImage(stampImage, {
+      x,
+      y,
+      width: stamp.width,
+      height: stamp.height,
+    });
+
+    const saved = await pdfDoc.save();
+    return await saveBytes(saved, currentOutputName());
+  }
+
+  async function handleFileChange() {
+    const file = fileInput.files[0];
+    if (!file) {
+      loadedBytes = null;
+      firstPageSize = null;
+      emptyPreview.hidden = false;
+      pageWrap.hidden = true;
+      status.textContent = 'PDF\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
+      return;
+    }
+    loadedBytes = await file.arrayBuffer();
+    status.textContent = 'PDF\u3092\u8aad\u307f\u8fbc\u307f\u307e\u3057\u305f\u3002';
+    await renderPdfPreview();
+  }
+
+  evidenceType.addEventListener('change', () => {
+    updateTextPreview();
+    updateStampOverlay();
+  });
+  numberInput.addEventListener('input', () => {
+    updateTextPreview();
+    updateStampOverlay();
+  });
+  document.querySelectorAll('input[name="side"]').forEach((radio) => {
+    radio.addEventListener('change', updateStampOverlay);
+  });
+  fileInput.addEventListener('change', async () => {
+    try {
+      await handleFileChange();
+    } catch (error) {
+      previewStatus.textContent = error.message || 'PDF\u3092\u8868\u793a\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002';
+    }
+  });
+  chooseFolderButton.addEventListener('click', async () => {
+    chooseFolderButton.disabled = true;
+    try {
+      await chooseDownloadFolder();
+      status.textContent = '\u4fdd\u5b58\u5148\u30d5\u30a9\u30eb\u30c0\u3092\u8a2d\u5b9a\u3057\u307e\u3057\u305f\u3002';
+    } catch (error) {
+      status.textContent = error.message || '\u4fdd\u5b58\u5148\u30d5\u30a9\u30eb\u30c0\u3092\u9078\u629e\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002';
+    } finally {
+      chooseFolderButton.disabled = !('showDirectoryPicker' in window);
+    }
+  });
+  runButton.addEventListener('click', async () => {
+    runButton.disabled = true;
+    status.textContent = '\u51e6\u7406\u4e2d\u3067\u3059...';
+    try {
+      const result = await stampPdf();
+      status.textContent = result === 'folder'
+        ? `\u5b8c\u4e86\u3057\u307e\u3057\u305f\u3002${currentOutputName()}\u3092\u9078\u629e\u6e08\u307f\u30d5\u30a9\u30eb\u30c0\u306b\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002`
+        : `\u5b8c\u4e86\u3057\u307e\u3057\u305f\u3002${currentOutputName()}\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3057\u307e\u3059\u3002`;
+    } catch (error) {
+      status.textContent = error.message || '\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002';
+    } finally {
+      runButton.disabled = false;
+    }
+  });
+  updateTextPreview();
+  initializeFolder();
+</script>
+</body>
+</html>
